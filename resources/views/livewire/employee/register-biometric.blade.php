@@ -16,7 +16,7 @@
                             <x-select
                                 placeholder="Select one employee"
                                 wire:model.live="employee"
-                                :options="$this->employees"
+                                :options="$this->employees()"
                                 option-label="name"
                                 option-value="id"
                             />

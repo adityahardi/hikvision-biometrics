@@ -139,6 +139,8 @@ class RegisterBiometric extends Component
                 $description = __('Face Biometric could not be stored. Please check the checkpoint data and try again!'),
             );
         }
+
+        $this->redirectRoute('checkpoints.register-biometric', parameters: ['checkpoint' => $this->checkpoint, 'employee' => $this->employee], navigate: true);
     }
 
     public function cancelFaceBiometric(): void
@@ -239,7 +241,6 @@ class RegisterBiometric extends Component
         }
     }
 
-    #[Computed]
     public function employees(): \Illuminate\Support\Collection
     {
         return Employee::orderBy('name')->get(['id', 'name']);

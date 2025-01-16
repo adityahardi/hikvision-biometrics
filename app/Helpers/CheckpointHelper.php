@@ -120,16 +120,32 @@ class CheckpointHelper
             return new CheckpointResponseDto($faceRequest);
         }
 
-        $binaryData = $faceRequest->body();
-        $payload = substr($binaryData, 360);
+        $contentType = $faceRequest->header('Content-Type');
+        $boundary = '--' . explode('boundary=', $contentType)[1];
 
-        $ulid = str(Str::ulid())->lower();
+        $rawBody = $faceRequest->body();
 
-        $fileName = self::STORAGE_PATH . "/{$ulid}.jpeg";
+        $filePartStart = strpos($rawBody, 'filename=');
 
-        Storage::put($fileName, $payload);
+        if ($filePartStart !== false) {
+            preg_match('/filename="([^"]+)"/', substr($rawBody, $filePartStart), $matches);
 
-        return new CheckpointResponseDto($faceRequest, true, $fileName);
+            $ulid = str(Str::ulid())->lower();
+
+            $fileName = self::STORAGE_PATH . "/{$ulid}.jpeg";
+
+            $binaryStart = strpos($rawBody, "\r\n\r\n", $filePartStart) + 4;
+
+            $binaryEnd = strpos($rawBody, $boundary, $binaryStart) - 2;
+
+            $binaryData = substr($rawBody, $binaryStart, $binaryEnd - $binaryStart);
+
+            Storage::put($fileName, $binaryData);
+
+            return new CheckpointResponseDto($faceRequest, true, $fileName);
+        }
+
+        return new CheckpointResponseDto($faceRequest);
     }
 
     /**
