@@ -30,7 +30,7 @@
                             $no = $checkpoints->firstItem();
                         @endphp
                         @forelse ($checkpoints as $item)
-                            <tr wire:loading.class="invisible" wire:key="{{ $item }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 whitespace-nowrap">
+                            <tr wire:key="{{ $item->id }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 whitespace-nowrap">
                                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $no++ }}</td>
                                 <th scope="row" class="px-6 py-4 ">{{ $item->name }}</th>
                                 <th scope="row" class="px-6 py-4 ">{{ $item->ip }}</th>
@@ -38,8 +38,8 @@
                                 <td class="px-6 py-4 flex flex-nowrap gap-2">
                                     <x-button label="Select" wire:navigate :href="route('checkpoints.register-biometric', $item->id)" info size="xs" />
                                     <x-button positive wire:navigate :href="route('checkpoints.edit', $item->id)" label="Edit" size="xs" />
-                                    <x-button warning spinner="reboot" wire:click="reboot({{ $item->id }})" label="Reboot" size="xs" />
-                                    <x-button negative spinner="deleteEmployee" wire:click="deleteEmployee({{ $item->id }})" label="Delete" size="xs" />
+                                    <x-button negative wire:loading.attr="disabled" wire:target="reboot" spinner="reboot" wire:click="reboot({{ $item->id }})" label="Reboot" size="xs" />
+                                    <x-button warning :href="route('checkpoints.manage', $item->id)" label="Manage" size="xs" />
                                 </td>
                             </tr>
                         @empty

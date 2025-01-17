@@ -129,17 +129,6 @@ class RegisterBiometric extends Component
             $description = __('Face Biometric saved successfully.'),
         );
 
-        $employee = Employee::find($this->employee);
-
-        $syncUserFaceBiometric = (new CheckpointService())->syncUserFaceBiometric($this->checkpoint, $employee);
-
-        if (!$syncUserFaceBiometric->success) {
-            $this->notification()->error(
-                $title = __('Failed Store Face Biometric ') . $this->checkpoint->name,
-                $description = __('Face Biometric could not be stored. Please check the checkpoint data and try again!'),
-            );
-        }
-
         $this->redirectRoute('checkpoints.register-biometric', parameters: ['checkpoint' => $this->checkpoint, 'employee' => $this->employee], navigate: true);
     }
 
