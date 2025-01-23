@@ -8,11 +8,12 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div class="mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                <div>
+                <div class="flex items-center gap-4">
                     <x-button href="{{ route('employees.create') }}" wire:navigate label="Create" primary size="sm" />
+                    <x-checkbox label="Has Biometric" wire:model.live="hasBiometric" />
                 </div>
                 <div class="flex items-center">
-                    <x-input placeholder="Search" wire:model="search"/>
+                    <x-input placeholder="Search" wire:model.live="search"/>
                 </div>
             </div>
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-md sm:rounded-lg p-6">
@@ -31,7 +32,7 @@
                             $no = $employees->firstItem();
                         @endphp
                         @forelse ($employees as $item)
-                            <tr wire:loading.class="invisible" wire:key="{{ $item }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 whitespace-nowrap">
+                            <tr wire:target="search" wire:loading.class="hidden" wire:key="{{ $item->id }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 whitespace-nowrap">
                                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $no++ }}</td>
                                 <th scope="row" class="px-6 py-4 ">{{ $item->name }}</th>
                                 <th scope="row" class="px-6 py-4 ">{{ $item->employee_id }}</th>

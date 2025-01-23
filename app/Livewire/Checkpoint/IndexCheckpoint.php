@@ -4,13 +4,14 @@ namespace App\Livewire\Checkpoint;
 
 use App\Models\Checkpoint;
 use App\Services\Checkpoint\CheckpointService;
+use App\Traits\WithPaginationAndSearch;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
 
 class IndexCheckpoint extends Component
 {
-    use WireUiActions;
+    use WireUiActions, WithPaginationAndSearch;
 
     public function deleteEmployee(Checkpoint $checkpoint, $confirmed = false): void
     {
@@ -75,7 +76,14 @@ class IndexCheckpoint extends Component
 
     public function render(): View
     {
-        $checkpoints = Checkpoint::paginate(20);
+        $checkpoints = Checkpoint::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('ip', 'like', '%'.$this->search.'%')
+                    ->orWhere('mac', 'like', '%'.$this->search.'%');
+            })
+            ->orderBy('name')
+            ->paginate(15)->withQueryString();
 
         return view('livewire.checkpoint.index', compact('checkpoints'))->title('Checkpoints');
     }
